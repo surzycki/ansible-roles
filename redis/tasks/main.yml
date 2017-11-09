@@ -1,0 +1,16 @@
+---
+# tasks file for redis
+- name: be sure redis is present
+  apt: name=redis-server state=present
+
+
+- name: be sure redis is configured.
+  template:
+    src: redis.conf.j2
+    dest: /etc/redis/redis.conf
+    mode: 0644
+  notify: restart redis
+
+
+- name: be sure redis is running and enabled on boot.
+  service: name=redis-server state=started enabled=yes

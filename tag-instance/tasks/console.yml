@@ -1,0 +1,32 @@
+- name: be sure to tag application instances for console
+  ec2_tag:
+    region: '{{ region }}'
+    resource: '{{ item.1.id }}'
+    state: present
+    tags:
+      'Name': "app-0{{ item.0 + 1 }}"
+  with_indexed_items: "{{ application_instances }}"
+
+
+- name: be sure to tag services instances for console
+  ec2_tag:
+    region: '{{ region }}'
+    resource: '{{ item.1.id }}'
+    state: present
+    tags:
+      'Name': "services-0{{ item.0 + 1 }}"
+  with_indexed_items: "{{ services_instances }}"
+
+
+- name: be sure to tag staging instances for console
+  ec2_tag:
+    region: '{{ region }}'
+    resource: '{{ item.1.id }}'
+    state: present
+    tags:
+      'Name': "staging"
+  with_indexed_items: "{{ staging_instances }}"
+
+
+
+

@@ -1,0 +1,59 @@
+upstream puma-{{ item.app }} {
+  server unix://{{ item.root }}/shared/tmp/sockets/puma.sock;
+}
+
+server {
+    listen {{ item.listen | default('80 default_server') }};
+
+    server_name {{ item.server_name }};
+
+    root {{ item.root }}/current/public;
+
+{% if item.error_page is defined %}
+    error_page {{ item.error_page }};
+{% endif %}
+{% if item.access_log is defined %}
+    access_log {{ item.access_log }};
+{% endif %}
+{% if item.error_log is defined %}
+    error_log {{ item.error_log }} error;
+{% endif %}
+
+
+
+{% if item.return is defined %}
+    return {{ item.return }};
+{% endif %}
+
+    location / {
+      try_files $uri $uri/index.html $uri.html @puma-{{ item.app }};
+    }
+
+    location @puma-{{ item.app }} {
+      proxy_redirect              off;
+
+      proxy_set_header            Host                $http_host;
+      proxy_set_header            X-Real-IP           $remote_addr;
+      proxy_set_header            X-Forwarded-For     $proxy_add_x_forwarded_for;
+      proxy_set_header            X-Forwarded-Proto   $scheme;
+
+      proxy_connect_timeout       90;
+      proxy_send_timeout          300;
+      proxy_read_timeout          300;
+
+      proxy_buffer_size           4k;
+      proxy_buffers               4 32k;
+      proxy_busy_buffers_size     64k;
+      proxy_temp_file_write_size  64k;
+
+      proxy_pass                  http://puma-{{ item.app }};
+    }
+
+    error_page 502 =302 @maintenance;
+
+    location @maintenance {
+      root            /var/www/html;
+      try_files $uri  /maintenance.html =302;
+    }
+}
+

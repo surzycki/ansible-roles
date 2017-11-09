@@ -1,0 +1,6 @@
+- name: be sure cache is updated
+  apt: update_cache=yes
+
+
+- name: be sure distribution is updated
+  apt: upgrade=dist

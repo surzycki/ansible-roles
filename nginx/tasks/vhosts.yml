@@ -1,0 +1,41 @@
+---
+- name: be sure default nginx host is removed
+  file:
+    path: "{{ nginx_default_vhost_path }}"
+    state: absent
+  notify:
+    - reload nginx
+
+
+- name: be sure to add a maintenance page
+  copy:
+    src: maintenance.html
+    dest: /var/www/html/maintenance.html
+    owner: '{{ nginx_user }}'
+    group: '{{ nginx_user }}'
+
+
+- name: be sure activate present hosts
+  file:
+    src: "{{ nginx_sites_available_path }}/{{ item.app }}"
+    dest: "{{ nginx_sites_enabled_path }}/{{ item.app }}"
+    state: "{{'link' if (state is not defined or state == 'enabled') else 'absent'}}"
+  when: item.state is not defined or item.state in ['present', 'enabled']
+  with_items: "{{ nginx_vhosts }}"
+  notify:
+    - reload nginx
+
+
+- name: be sure to remove absent hosts.
+  file:
+    dest: "{{ nginx_sites_enabled_path }}/{{ item.app }}"
+    state: absent
+  when: item.state is defined and item.state == 'absent'
+  with_items: "{{ nginx_vhosts }}"
+  notify: reload nginx
+
+
+
+
+
+

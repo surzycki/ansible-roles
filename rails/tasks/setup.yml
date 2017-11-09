@@ -1,0 +1,11 @@
+---
+- name: be sure there is a shared config directory
+  file:
+    path:  "{{ item.root }}/shared/config"
+    state: directory
+    force: true
+  when: item.rails is defined and item.rails == true
+  with_items: "{{ nginx_vhosts }}"
+
+
+

@@ -1,0 +1,45 @@
+- name: be sure to install ruby-install
+  command: sudo make install
+  args:
+    chdir: /tmp/ruby-install-0.6.1
+    creates: /usr/local/bin/ruby-install
+
+
+- name: be sure to install ruby
+  command: ruby-install ruby {{ ruby_version }}
+  async: 700
+  poll: 30
+  args:
+    creates: /opt/rubies/ruby-{{ ruby_version }}
+
+
+
+- name: be sure to sym link current ruby
+  file:
+    src:  /opt/rubies/ruby-{{ ruby_version }}/bin/{{ item }}
+    dest: /usr/local/bin/{{ item }}
+    state: link
+  with_items:
+    - ruby
+    - gem
+    - erb
+    - irb
+    - rake
+    - rdoc
+    - ri
+
+
+- name: be sure to install bundler
+  command: gem install bundler
+  args:
+    creates: /opt/rubies/ruby-{{ ruby_version }}/bundler
+
+
+- name: be sure to sym link current bundler
+  file:
+    src:  /opt/rubies/ruby-{{ ruby_version }}/bin/{{ item }}
+    dest: /usr/local/bin/{{ item }}
+    state: link
+  with_items:
+    - bundle
+    - bundler

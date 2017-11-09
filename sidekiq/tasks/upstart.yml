@@ -1,0 +1,15 @@
+- name: be sure to create sidekiq service
+  template:
+    src: sidekiq.conf.j2
+    dest: '/etc/init/{{ item.service }}.conf'
+    mode: 0644
+  with_items: "{{ sidekiq }}"
+
+
+- name: be sure to give deploy user access to sidekiq upstart
+  lineinfile:
+    dest: "/etc/sudoers.d/{{ deploy_user }}"
+    line: "{{ deploy_user }} ALL = (root) NOPASSWD: /sbin/start {{ item.service }}, /sbin/stop {{ item.service }}, /sbin/status {{ item.service }}"
+    state: present
+    validate: "/usr/sbin/visudo -cf %s"
+  with_items: "{{ sidekiq }}"

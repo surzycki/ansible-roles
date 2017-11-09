@@ -1,0 +1,2 @@
+#- name: install sidekiq globally
+#  command: gem install sidekiq

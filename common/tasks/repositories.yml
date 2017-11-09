@@ -1,0 +1,6 @@
+- name: be sure to add newest postgres repository
+  apt_repository:
+    repo: 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main'
+    state: present
+    update_cache: yes
+  register: postgres_ppa_added

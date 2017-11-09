@@ -1,0 +1,15 @@
+[Unit]
+Description=Viktor puma server
+After=network.target
+
+[Service]
+Type=simple
+User={{ deploy_user }}
+WorkingDirectory={{ item.working_dir }}
+ExecStart=/usr/local/bin/bundle exec puma -C {{ item.shared_dir }}/puma.rb
+ExecStop=/usr/local/bin/bundle exec pumactl -S {{ item.shared_dir }}/tmp/pids/puma.state stop
+TimeoutSec=15
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

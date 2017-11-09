@@ -1,0 +1,4 @@
+---
+- include: setup.yml
+- include: dependencies.yml
+- include: clean_up.yml

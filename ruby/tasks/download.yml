@@ -1,0 +1,6 @@
+- name: be sure to download ruby-install
+  unarchive:
+    src: https://github.com/postmodern/ruby-install/archive/v0.6.1.tar.gz
+    dest: /tmp
+    remote_src: yes
+

@@ -1,0 +1,16 @@
+---
+# tasks file for dns
+- name: regsiter running instances in dns
+  route53:
+    command: create
+    zone: "{{ routes53.zone }}"
+    record: "{{ item.tags.Name }}.{{ routes53.zone }}"
+    value: "{{ item.public_dns_name }}"
+    type: CNAME
+    overwrite: yes
+    ttl: 60
+  with_items: "{{ running_instances }}"
+
+
+
+

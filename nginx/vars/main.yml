@@ -1,0 +1,8 @@
+---
+# vars file for nginx
+nginx_conf_path: /etc/nginx/conf.d
+nginx_mime_file_path: /etc/nginx/mime.types
+nginx_pidfile: /run/nginx.pid
+nginx_sites_enabled_path: /etc/nginx/sites-enabled
+nginx_sites_available_path: /etc/nginx/sites-available
+nginx_default_vhost_path: /etc/nginx/sites-enabled/default

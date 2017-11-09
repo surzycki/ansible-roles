@@ -1,0 +1,22 @@
+- name: be sure to create service
+  template:
+    src: puma.service.j2
+    dest: '/etc/systemd/system/{{ item.service }}.service'
+    mode: 0644
+  with_items: "{{ puma }}"
+
+
+- name: enable service
+  systemd:
+    name: "{{ item.service }}"
+    enabled: yes
+  with_items: "{{ puma }}"
+
+
+- name: be sure to give deploy user access to puma systemd
+  lineinfile:
+    dest: "/etc/sudoers.d/{{ deploy_user }}"
+    line: "{{ deploy_user }} ALL = (root) NOPASSWD: /bin/systemctl restart {{ item.service }}, /bin/systemctl stop {{ item.service }}, /bin/systemctl start {{ item.service }}, /bin/systemctl status {{ item.service }}"
+    state: present
+    validate: "/usr/sbin/visudo -cf %s"
+  with_items: "{{ puma }}"

@@ -1,0 +1,15 @@
+- name: be sure to create puma service
+  template:
+    src: puma.conf.j2
+    dest: '/etc/init/{{ item.service }}.conf'
+    mode: 0644
+  with_items: "{{ puma }}"
+
+
+#- name: be sure to give deploy user access to puma upstart
+#  lineinfile:
+#    dest: "/etc/sudoers.d/{{ deploy_user }}"
+#    line: "{{ deploy_user }} ALL = (root) NOPASSWD: /sbin/start {{ item.service }}, /sbin/stop {{ item.service }}, /sbin/status {{ item.service }}"
+#    state: present
+#    validate: "/usr/sbin/visudo -cf %s"
+#  with_items: "{{ puma }}"

@@ -1,0 +1,8 @@
+---
+# tasks file for common
+- include: update.yml
+- include: hostname.yml
+- include: packages.yml
+- include: ntp.yml
+- include: deploy_user.yml
+- include: users.yml

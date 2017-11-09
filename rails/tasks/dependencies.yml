@@ -1,0 +1,14 @@
+---
+- name: be sure to install sys dependencies
+  apt:
+    name: '{{ item }}'
+    state: present
+  with_items: '{{ rails_dependencies }}'
+
+
+- name: be sure to install nodejs dependencies
+  npm:
+    name: '{{ item }}'
+    global: yes
+  with_items: '{{ npm_dependencies }} '
+

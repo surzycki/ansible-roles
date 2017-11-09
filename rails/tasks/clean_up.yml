@@ -1,0 +1,11 @@
+- name: be sure to fix permissions for rails app directory
+  file:
+    path: "{{ item.root }}"
+    owner: "{{ deploy_user }}"
+    group: "{{ nginx_user }}"
+    state: directory
+    mode: u=rwX,g=rwX,o=rX
+    recurse: yes
+  when:
+    - item.rails is defined and item.state in ['present', 'enabled']
+  with_items: "{{ nginx_vhosts }}"

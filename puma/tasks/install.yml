@@ -1,0 +1,20 @@
+- name: be sure the puma config directory exists
+  file:
+    path: '{{ item.shared_dir }}'
+    state: directory
+  with_items: "{{ puma }}"
+
+- name: be sure to add puma config
+  template:
+    src: puma.rb.j2
+    dest: '{{ item.shared_dir }}/puma.rb'
+  with_items: "{{ puma }}"
+
+
+#- name: install puma globally
+#  command: gem install puma
+
+
+
+
+

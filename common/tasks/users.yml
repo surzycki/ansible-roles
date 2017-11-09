@@ -1,0 +1,50 @@
+- name: be sure to add users
+  user:
+    name: "{{ item.username }}"
+    groups: "{{ item.groups|join(',') }}"
+    shell: '/bin/bash'
+  when: item.state == 'present'
+  with_items: "{{ users }}"
+  tags: users
+
+
+- name: be sure to give users ssh access
+  authorized_key:
+    key: "{{ item.authorized_key }}"
+    user: "{{ item.username }}"
+  when: item.state == 'present'
+  with_items: "{{ users }}"
+  tags: users
+
+
+- name: be sure to add user to sudoers
+  template:
+    src: sudoers.d.j2
+    dest: "/etc/sudoers.d/{{ item.username }}"
+    mode: 0440
+    validate: "/usr/sbin/visudo -cf %s"
+  when:
+    - item.state == 'present'
+    - item.sudo is defined and item.sudo == true
+  with_items: "{{ users }}"
+  tags: users
+
+
+- name: be sure to remove users
+  user:
+    name: "{{ item.username }}"
+    state: absent
+    remove: yes
+  when: item.state == 'absent'
+  with_items: "{{ users }}"
+  tags: users
+
+
+- name: be sure to remove sudoer
+  file:
+    path: "/etc/sudoers.d/{{ item.username }}"
+    state: absent
+  when: item.state == 'absent' or item.sudo is not defined or item.sudo == false
+  with_items: "{{ users }}"
+  tags: users
+

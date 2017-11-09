@@ -1,0 +1,20 @@
+---
+- name: be sure repository software is present
+  apt: name={{item}} state=present
+  tags: nodejs
+  with_items:
+    - software-properties-common
+    - curl
+
+
+- name: be sure to add node repo
+  shell: curl -sL https://deb.nodesource.com/setup_{{ node_version }} | bash -
+  args:
+    executable: /bin/bash
+  tags: nodejs
+
+
+- name: be sure node is installed
+  apt: name=nodejs state=present
+  tags: nodejs
+

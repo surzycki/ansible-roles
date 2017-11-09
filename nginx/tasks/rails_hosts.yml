@@ -1,0 +1,22 @@
+- name: be sure to add rails hosts.
+  template:
+    src: rails.conf.j2
+    dest: "{{ nginx_sites_available_path }}/{{ item.app }}"
+  when:
+    - item.rails is defined and item.state in ['present', 'enabled']
+  with_items: "{{ nginx_vhosts }}"
+  notify: reload nginx
+
+
+- name: be sure to create root
+  file:
+    path: "{{ item.root }}"
+    state: directory
+    owner: '{{ deploy_user }}'
+    group: '{{ nginx_user }}'
+  when:
+    - item.rails is defined and item.state in ['present', 'enabled']
+  with_items: "{{ nginx_vhosts }}"
+
+
+

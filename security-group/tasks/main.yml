@@ -1,0 +1,15 @@
+---
+# tasks file for security-group
+- name: 'be sure firewall inbound rules are setup'
+  ec2_group:
+    region: '{{ region }}'
+    name: '{{ item.name }}'
+    description: '{{ item.description }}'
+    state: present
+    rules: '{{item.rules}}'
+    rules_egress:
+      - proto: all
+        to_port:  -1
+        from_port: -1
+        cidr_ip: 0.0.0.0/0
+  with_items: '{{ security_groups }}'

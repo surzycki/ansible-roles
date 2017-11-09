@@ -1,0 +1,20 @@
+- name: "be sure there is a deploy user ({{ deploy_user }})"
+  user:
+    name: "{{ deploy_user }}"
+    comment: deploy user
+    uid: 1040
+
+
+- name: "be sure deploy user ({{ deploy_user }}) can access the server remotely"
+  authorized_key:
+    user: "{{ deploy_user }}"
+    key: "{{ item }}"
+  with_file:
+    - keys/deploy.pub
+
+
+- name: "be sure deploy user has a sudo file entry (empty)"
+  file:
+    path: "/etc/sudoers.d/{{ deploy_user }}"
+    state: touch
+    mode: 0440

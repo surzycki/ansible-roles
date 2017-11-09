@@ -1,0 +1,6 @@
+---
+# tasks file for nginx
+- include: repository.yml
+- include: nginx.yml
+- include: rails_hosts.yml
+- include: vhosts.yml

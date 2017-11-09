@@ -1,0 +1,17 @@
+---
+# tasks file for memcached
+- name: be sure memcached is present
+  apt: name=memcached state=present update_cache=yes
+
+
+- name: be sure memcached configured
+  template: src=memcached.conf.j2 dest=/etc/memcached.conf
+  notify: restart memcached
+
+
+- name: be sure memcached does not run out of file descriptors
+  sysctl: name=fs.file-max value={{ memcached_fs_file_max }} state=present ignoreerrors=yes
+
+
+- name: be sure memcached is running and enabled on boot
+  service: name=memcached state=started enabled=yes
