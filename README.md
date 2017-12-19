@@ -6,3 +6,4 @@ Shared ansible roles for projects
 
 * Add new role by copying into directory
 * Push to repository
+
