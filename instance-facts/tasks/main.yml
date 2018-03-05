@@ -1,21 +1,44 @@
 ---
 # tasks file for instance-facts
-- name: be sure to get some facts about running instances
-  ec2_remote_facts:
+- name: be sure to get some facts about application instances
+  ec2_instance_facts:
     region: "{{ region }}"
     filters:
       instance-state-name: running
-      "tag:company": "{{ company }}"
+      "tag:env": "{{ stage }}"
+      "tag:group": "application"
   register: ec2_facts
-  with_items: "{{ groups }}"
 
 
-- name: be sure to set facts for instances
-  set_fact: "{{ item.item }}_instances={{ item.instances }}"
-  with_items: "{{ ec2_facts.results }}"
+- name: be sure to set facts for application_instances
+  set_fact: "application_instances={{ ec2_facts.instances }}"
+  
+
+- name: be sure to get some facts about services instances
+  ec2_instance_facts:
+    region: "{{ region }}"
+    filters:
+      instance-state-name: running
+      "tag:env": "{{ stage }}"
+      "tag:group": "services"
+  register: ec2_facts
 
 
-- name: be sure to set facts all instances
-  set_fact: "ec2_all_instances={{ ec2_facts.results }}"
+- name: be sure to set facts for service_instances
+  set_fact: "service_instances={{ ec2_facts.instances }}"
+  
 
+- name: be sure to get some facts about staging instances
+  ec2_instance_facts:
+    region: "{{ region }}"
+    filters:
+      instance-state-name: running
+      "tag:env": "staging"
+  register: ec2_facts
+  when: stage == 'staging'
+
+
+- name: be sure to set facts for staging_instances
+  set_fact: "staging_instances={{ ec2_facts.instances }}"
+  when: stage == 'staging' 
 

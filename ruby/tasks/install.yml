@@ -7,7 +7,7 @@
 
 - name: be sure to install ruby
   command: ruby-install ruby {{ ruby_version }}
-  async: 700
+  async: 900
   poll: 30
   args:
     creates: /opt/rubies/ruby-{{ ruby_version }}
